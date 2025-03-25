@@ -1,0 +1,199 @@
+# EmitTS 🚀
+
+[![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
+
+A lightweight, type-safe event emitter for TypeScript with priority-based execution and flexible emission strategies.
+
+## Features ✨
+
+- 🎯 **Fully Type-Safe**: Complete TypeScript support with type inference
+- ⚡ **High Performance**: Optimized for both small and large-scale applications
+- 🎮 **Priority Control**: Execute listeners in order of importance
+- 🔄 **Flexible Execution**: Choose between parallel or sequential execution
+- 🐛 **Debug Support**: Built-in debugging capabilities
+- 🛡️ **Memory Safe**: Memory leak detection with maxListeners warning
+
+## Installation 📦
+
+```bash
+# Using npm
+npm install emitts
+
+# Using yarn
+yarn add emitts
+
+# Using pnpm
+pnpm add emitts
+```
+
+## Quick Start 🚀
+
+```typescript
+import {EmitTS} from "emitts"
+
+// Define your event types
+interface MyEvents {
+  userLoggedIn: {userId: string; timestamp: number}
+  dataUpdated: {newValue: string}
+  error: Error
+}
+
+// Create a type-safe event emitter
+const emitter = new EmitTS<MyEvents>()
+
+// Subscribe to events
+emitter.on("userLoggedIn", ({userId, timestamp}) => {
+  console.log(`User ${userId} logged in at ${timestamp}`)
+})
+
+// Emit events
+await emitter.emit("userLoggedIn", {
+  userId: "user123",
+  timestamp: Date.now(),
+})
+```
+
+## Advanced Usage 🔥
+
+### Priority-based Execution
+
+```typescript
+// Higher priority listeners execute first
+emitter.on(
+  "dataUpdated",
+  (data) => {
+    console.log("Second listener")
+  },
+  1,
+)
+
+emitter.on(
+  "dataUpdated",
+  (data) => {
+    console.log("First listener")
+  },
+  2,
+) // Higher priority
+
+await emitter.emit("dataUpdated", {newValue: "test"})
+// Output:
+// First listener
+// Second listener
+```
+
+### Sequential vs Parallel Execution
+
+```typescript
+// Sequential execution (one after another)
+await emitter.emit("dataUpdated", data, {strategy: "sequential"})
+
+// Parallel execution (default)
+await emitter.emit("dataUpdated", data, {strategy: "parallel"})
+```
+
+### One-time Listeners
+
+```typescript
+// Automatically removes listener after first execution
+emitter.once("userLoggedIn", (data) => {
+  console.log("This will run only once")
+})
+```
+
+### Promise-based Usage
+
+```typescript
+// Wait for the next event
+const data = await emitter.toPromise("dataUpdated")
+console.log("Got data:", data)
+```
+
+### Debug Mode
+
+```typescript
+const emitter = new EmitTS<MyEvents>({
+  debug: true,
+  logger: (operation, data) => {
+    console.log(`[DEBUG] ${operation}:`, data)
+  },
+})
+```
+
+## API Reference 📚
+
+### `EmitTS<Events>`
+
+#### Constructor Options
+
+```typescript
+interface EmitTSOptions {
+  debug?: boolean // Enable debug logging
+  logger?: DebugLog // Custom debug logger
+  maxListeners?: number // Max listeners warning threshold (default: 10)
+}
+```
+
+#### Methods
+
+| Method           | Description                        | Type                                                                                        |
+| ---------------- | ---------------------------------- | ------------------------------------------------------------------------------------------- |
+| `on`             | Subscribe to an event              | `(event: keyof Events, callback: EventCallback<Events[K]>, priority?: number) => CleanUpFn` |
+| `once`           | Subscribe to an event once         | `(event: keyof Events, callback: EventCallback<Events[K]>, priority?: number) => void`      |
+| `off`            | Unsubscribe from an event          | `(event?: keyof Events, callback?: EventCallback<Events[K]>) => void`                       |
+| `emit`           | Emit an event                      | `(event: keyof Events, data: Events[K], options?: EmitOptions) => Promise<void>`            |
+| `toPromise`      | Convert next event to promise      | `(event: keyof Events) => Promise<Events[K]>`                                               |
+| `has`            | Check if event has listeners       | `(event: keyof Events) => boolean`                                                          |
+| `isEmpty`        | Check if emitter has any listeners | `() => boolean`                                                                             |
+| `listenersCount` | Get number of listeners            | `(event: keyof Events) => number`                                                           |
+| `clear`          | Remove all listeners               | `() => void`                                                                                |
+
+### Types
+
+```typescript
+type EventCallback<T> = (data: T) => void | Promise<void>
+
+type EmitOptions = {
+  strategy?: "parallel" | "sequential"
+}
+
+type CleanUpFn = () => void
+```
+
+## Best Practices 💡
+
+1. **Type Safety**
+
+   ```typescript
+   // Define event types for type safety
+   interface MyEvents {
+     event1: string
+     event2: number
+   }
+   const emitter = new EmitTS<MyEvents>()
+   ```
+
+2. **Memory Management**
+
+   ```typescript
+   // Always clean up listeners
+   const cleanup = emitter.on("event", handler)
+   // Later...
+   cleanup()
+   ```
+
+3. **Error Handling**
+
+   ```typescript
+   try {
+     await emitter.emit("event", data)
+   } catch (error) {
+     console.error("Error in event handlers:", error)
+   }
+   ```
+
+4. **Priority Usage**
+   ```typescript
+   // Use priorities for critical handlers
+   emitter.on("critical", handler, 100) // High priority
+   emitter.on("normal", handler, 0) // Normal priority
+   ```
