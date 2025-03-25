@@ -2,55 +2,55 @@
 
 [![TypeScript](https://badges.frapsoft.com/typescript/code/typescript.svg?v=101)](https://github.com/ellerbrock/typescript-badges/)
 
-A lightweight, type-safe event emitter for TypeScript with priority-based execution and flexible emission strategies.
+A type-safe event emitter for TypeScript with priority-based listeners, sequential/parallel execution strategies, and memory leak detection. Provides full type inference for event names and payloads without type casting.
 
 ## Features ✨
 
-- 🎯 **Fully Type-Safe**: Complete TypeScript support with type inference
+- 🎯 **Fully Type-Safe**: Complete TypeScript support with strict type checking
 - ⚡ **High Performance**: Optimized for both small and large-scale applications
 - 🎮 **Priority Control**: Execute listeners in order of importance
 - 🔄 **Flexible Execution**: Choose between parallel or sequential execution
 - 🐛 **Debug Support**: Built-in debugging capabilities
 - 🛡️ **Memory Safe**: Memory leak detection with maxListeners warning
+- 🔄 **Promise-based API**: Use promises for asynchronous operations
+- 🔄 **Zero Dependencies**: No external dependencies
 
 ## Installation 📦
 
 ```bash
-# Using npm
 npm install emitts
-
-# Using yarn
-yarn add emitts
-
-# Using pnpm
-pnpm add emitts
 ```
 
 ## Quick Start 🚀
 
 ```typescript
-import {EmitTS} from "emitts"
+import { EmitTS } from 'emitts';
 
-// Define your event types
-interface MyEvents {
-  userLoggedIn: {userId: string; timestamp: number}
-  dataUpdated: {newValue: string}
-  error: Error
-}
+// Define your events
+type AppEvents = {
+  greet: string;
+  data: number;
+  userJoined: { id: number; name: string };
+};
 
-// Create a type-safe event emitter
-const emitter = new EmitTS<MyEvents>()
+// Create type-safe emitter
+const emitter = new EmitTS<AppEvents>();
 
-// Subscribe to events
-emitter.on("userLoggedIn", ({userId, timestamp}) => {
-  console.log(`User ${userId} logged in at ${timestamp}`)
-})
+// TypeScript will infer correct types
+emitter.on('greet', (name) => {
+  console.log(`Hello, ${name}!`);
+});
 
-// Emit events
-await emitter.emit("userLoggedIn", {
-  userId: "user123",
-  timestamp: Date.now(),
-})
+emitter.on('userJoined', (user) => {
+  console.log(`User ${user.name} joined`);
+});
+
+// Priority-based listeners
+emitter.on('data', () => console.log('Second'), 0);
+emitter.on('data', () => console.log('First'), 100);
+
+// Sequential execution
+await emitter.emit('data', 42, { strategy: 'sequential' });
 ```
 
 ## Advanced Usage 🔥
@@ -197,3 +197,7 @@ type CleanUpFn = () => void
    emitter.on("critical", handler, 100) // High priority
    emitter.on("normal", handler, 0) // Normal priority
    ```
+
+## License
+
+MIT
