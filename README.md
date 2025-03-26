@@ -58,22 +58,10 @@ await emitter.emit('data', 42, { strategy: 'sequential' });
 ### Priority-based Execution
 
 ```typescript
-// Higher priority listeners execute first
-emitter.on(
-  "dataUpdated",
-  (data) => {
-    console.log("Second listener")
-  },
-  1,
-)
 
-emitter.on(
-  "dataUpdated",
-  (data) => {
-    console.log("First listener")
-  },
-  2,
-) // Higher priority
+emitter.on("dataUpdated", (data) => console.log("Second listener"), 1)
+
+emitter.on("dataUpdated", (data) => console.log("First listener"), 2) // Higher priority
 
 await emitter.emit("dataUpdated", {newValue: "test"})
 // Output:
@@ -95,9 +83,7 @@ await emitter.emit("dataUpdated", data, {strategy: "parallel"})
 
 ```typescript
 // Automatically removes listener after first execution
-emitter.once("userLoggedIn", (data) => {
-  console.log("This will run only once")
-})
+emitter.once("userLoggedIn", (data) => console.log("This will run only once"))
 ```
 
 ### Promise-based Usage
