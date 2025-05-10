@@ -2,11 +2,14 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    exclude: ['examples/basic.ts'],
+    globals: true,
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
+    exclude: ['examples/**/*'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json-summary'],
-      exclude: ['examples/basic.ts'],
+      exclude: ['examples/**/*'],
     },
   },
 }); 

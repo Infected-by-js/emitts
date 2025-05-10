@@ -24,33 +24,33 @@ npm install emitts
 ## Quick Start 🚀
 
 ```typescript
-import { EmitTS } from 'emitts';
+import {EmitTS} from "emitts"
 
 // Define your events
 type AppEvents = {
-  greet: string;
-  data: number;
-  userJoined: { id: number; name: string };
-};
+  greet: string
+  data: number
+  userJoined: {id: number; name: string}
+}
 
 // Create type-safe emitter
-const emitter = new EmitTS<AppEvents>();
+const emitter = new EmitTS<AppEvents>()
 
 // TypeScript will infer correct types
-emitter.on('greet', (name) => {
-  console.log(`Hello, ${name}!`);
-});
+emitter.on("greet", (name) => {
+  console.log(`Hello, ${name}!`)
+})
 
-emitter.on('userJoined', (user) => {
-  console.log(`User ${user.name} joined`);
-});
+emitter.on("userJoined", (user) => {
+  console.log(`User ${user.name} joined`)
+})
 
 // Priority-based listeners
-emitter.on('data', () => console.log('Second'), 0);
-emitter.on('data', () => console.log('First'), 100);
+emitter.on("data", () => console.log("Second"), 0)
+emitter.on("data", () => console.log("First"), 100)
 
 // Sequential execution
-await emitter.emit('data', 42, { strategy: 'sequential' });
+await emitter.emit("data", 42, {strategy: "sequential"})
 ```
 
 ## Advanced Usage 🔥
@@ -58,7 +58,6 @@ await emitter.emit('data', 42, { strategy: 'sequential' });
 ### Priority-based Execution
 
 ```typescript
-
 emitter.on("dataUpdated", (data) => console.log("Second listener"), 1)
 
 emitter.on("dataUpdated", (data) => console.log("First listener"), 2) // Higher priority
@@ -183,6 +182,46 @@ type CleanUpFn = () => void
    emitter.on("critical", handler, 100) // High priority
    emitter.on("normal", handler, 0) // Normal priority
    ```
+
+## Troubleshooting 🔧
+
+### Common Issues and Solutions
+
+1. **TypeScript Errors**
+
+   ```typescript
+   // ❌ Error: Type 'string' is not assignable to type 'number'
+   emitter.emit("data", "42") // Wrong type
+
+   // ✅ Correct usage
+   emitter.emit("data", 42) // Correct type
+   ```
+
+2. **Memory Leaks**
+
+   ```typescript
+   // ❌ Potential memory leak
+   emitter.on("event", handler) // No cleanup
+
+   // ✅ Proper cleanup
+   const cleanup = emitter.on("event", handler)
+   // When done:
+   cleanup()
+   ```
+
+3. **Async Handler Issues**
+
+   ```typescript
+   // ❌ Missing await
+   emitter.emit("event", data) // Might not wait for handlers
+
+   // ✅ Proper async handling
+   await emitter.emit("event", data) // Waits for all handlers
+   ```
+
+## Contributing 🤝
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 

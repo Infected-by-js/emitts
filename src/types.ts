@@ -2,7 +2,7 @@
  * Function type for debug logging in the EmitTS.
  * Used to log subscription and emission events.
  */
-export type DebugLog = (message: string, data?: any) => void
+export type DebugLog = (message: string, data?: unknown) => void
 
 /**
  * Base type representing a map of event names to their payload types.

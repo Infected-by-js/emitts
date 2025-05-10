@@ -23,7 +23,7 @@ import type {
  * @template Events A map of event names to their payload types
  */
 export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Events> {
-  private subscriptions: Map<keyof Events, EventSubscription<any>>
+  private subscriptions: Map<keyof Events, EventSubscription<unknown>>
   private maxListeners: number
   private logger: DebugLog
 
@@ -211,7 +211,7 @@ export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Event
  *
  * @template T The event payload type
  */
-class EventSubscription<T = any> implements IEventSubscription<T> {
+class EventSubscription<T = unknown> implements IEventSubscription<T> {
   public type: string
   public subscribers: SubscriberWithPriority<T>[]
   private maxListeners: number
@@ -248,7 +248,8 @@ class EventSubscription<T = any> implements IEventSubscription<T> {
       )
     }
 
-    insertSorted(this.subscribers, {callback, priority}, (s) => s.priority)
+    const subscriber: SubscriberWithPriority<T> = {callback, priority}
+    insertSorted(this.subscribers, subscriber, (s) => s.priority)
 
     return () => this.removeSubscriber(callback)
   }

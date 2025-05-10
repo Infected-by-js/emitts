@@ -29,10 +29,9 @@ export function removeFromArray<T>(array: T[], match: (item: T) => boolean): voi
   if (index !== -1) array.splice(index, 1)
 }
 
-
 type LogParams<Events extends EventMap> = {
   event?: keyof Events
-  data?: any
+  data?: unknown
   message?: string
 }
 
@@ -43,7 +42,11 @@ export function log<Events extends EventMap>(operation: string, params: LogParam
   const stackTrace = getStackTrace()
   const eventName = params.event ? String(params.event) : ""
 
-  const logParts = [`[EmitTS]`, `${operation.toUpperCase()} ${eventName ? `${eventName}` : ""}`, "\n"]
+  const logParts: (string | unknown)[] = [
+    `[EmitTS]`,
+    `${operation.toUpperCase()} ${eventName ? `${eventName}` : ""}`,
+    "\n",
+  ]
 
   if (params.data) logParts.push("DATA ", params.data)
   if (params.message) logParts.push("MESSAGE ", params.message)
