@@ -1,6 +1,6 @@
 {
   "name": "@infectedbyjs/emitts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "A type-safe event emitter for TypeScript with priority-based listeners, sequential/parallel execution strategies, and memory leak detection",
   "main": "./dist/index.js",
@@ -18,7 +18,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
