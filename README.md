@@ -18,13 +18,13 @@ A type-safe event emitter for TypeScript with priority-based listeners, sequenti
 ## Installation 📦
 
 ```bash
-npm install emitts
+npm install @infectedbyjs/emitts
 ```
 
 ## Quick Start 🚀
 
 ```typescript
-import {EmitTS} from "emitts"
+import {EmitTS} from "@infectedbyjs/emitts"
 
 // Define your events
 type AppEvents = {
