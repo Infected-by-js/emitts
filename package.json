@@ -1,6 +1,6 @@
 {
   "name": "@infectedbyjs/emitts",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "type": "module",
   "description": "A type-safe event emitter for TypeScript with priority-based listeners, sequential/parallel execution strategies, and memory leak detection",
   "main": "./dist/index.js",

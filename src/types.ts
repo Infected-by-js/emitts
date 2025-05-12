@@ -1,23 +1,31 @@
 /**
- * Function type for debug logging in the EmitTS.
- * Used to log subscription and emission events.
+ * Function type for debug logging. Used to capture internal events when debug mode is enabled.
  */
 export type DebugLog = (message: string, data?: unknown) => void
 
 /**
- * Base type representing a map of event names to their payload types.
- * EmitTS implementations can extend this with specific event definitions.
+ * Base type for defining your application's events.
+ * Use this to create strongly-typed event definitions.
+ *
+ * @example
+ * ```ts
+ * type MyEvents = {
+ *   userLogin: { id: string, name: string }
+ *   dataUpdated: number
+ *   notify: string
+ * }
+ * ```
  */
 export type EventMap = Record<string | symbol, unknown>
 
 /**
- * Function returned from subscription methods that, when called,
- * will unsubscribe the listener.
+ * Function returned when subscribing to events.
+ * Call this function to unsubscribe the listener.
  */
 export type CleanUpFn = () => void
 
 /**
- * Type for event callback functions.
+ * Type for event listener functions.
  * @template T The event payload type
  */
 export type EventCallback<T> = (data: T) => void | Promise<void>
@@ -64,6 +72,8 @@ export interface IEventSubscription<T> {
 
 /**
  * Interface defining the public API of an event emitter.
+ * You shouldn't need to use this interface directly, use the EmitTS class instead.
+ *
  * @template Events A map of event names to their corresponding payload types
  */
 export interface IEmitTS<Events extends EventMap = EventMap> {

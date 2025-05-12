@@ -36,7 +36,8 @@ type LogParams<Events extends EventMap> = {
 }
 
 /**
- * Default debug logger for the EmitTS.
+ * Default debug logger used when debug mode is enabled.
+ * Provides detailed information about internal events and operations.
  */
 export function log<Events extends EventMap>(operation: string, params: LogParams<Events>): void {
   const stackTrace = getStackTrace()

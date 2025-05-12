@@ -12,10 +12,10 @@ import type {
 } from "./types"
 
 /**
- * Implementation of the IEmitTS interface providing a type-safe event system.
+ * A type-safe event emitter with priority-based event handling.
  *
  * Features:
- * - Priority-based subscribers (higher numbers execute first)
+ * - Priority-based listeners (higher numbers execute first)
  * - Sequential or parallel execution strategies
  * - Debugging capabilities with custom loggers
  * - Memory leak detection with maxListeners warning
@@ -28,7 +28,7 @@ export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Event
   private logger: DebugLog
 
   /**
-   * Creates a new EmitTS instance.
+   * Creates a new event emitter instance.
    *
    * @param options Configuration options
    * @param options.debug Whether to enable debug logging (defaults to false)
@@ -206,8 +206,8 @@ export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Event
 }
 
 /**
- * Internal implementation of IEventSubscription that manages subscribers for a single event type.
- * Handles priority sorting, duplicate detection, and subscriber management.
+ * Internal class that manages subscribers for a single event type.
+ * Handles priority sorting, duplicate detection, and memory leak warnings.
  *
  * @template T The event payload type
  */
