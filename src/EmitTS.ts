@@ -84,8 +84,8 @@ export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Event
   }
 
   /**
-   * Implementation of on() method that creates and manages subscriptions.
-   * Handles initial subscription setup and debug logging.
+   * Subscribes a callback function to an event with optional priority.
+   * Higher priority listeners are called first.
    */
   on<E extends keyof Events>(event: E, callback: EventCallback<Events[E]>, priority = 0): CleanUpFn {
     if (!this.subscriptions.has(event)) {
@@ -105,7 +105,7 @@ export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Event
   }
 
   /**
-   * Implementation of once() that creates a self-removing listener.
+   * Subscribes a one-time callback function that automatically unsubscribes after execution.
    */
   once<E extends keyof Events>(event: E, callback: EventCallback<Events[E]>, priority = 0): void {
     this.logger("subscribe:once", {event})
@@ -123,8 +123,8 @@ export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Event
   }
 
   /**
-   * Implementation of off() that handles both specific and all-event unsubscription.
-   * Cleans up empty subscription objects to prevent memory leaks.
+   * Removes listeners from an event. If no callback is provided, removes all listeners.
+   * If no event is provided, clears all listeners from all events.
    */
   off<E extends keyof Events>(event?: E, callback?: EventCallback<Events[E]>): void {
     if (!event || !this.subscriptions.has(event)) {
@@ -149,8 +149,9 @@ export class EmitTS<Events extends EventMap = EventMap> implements IEmitTS<Event
   }
 
   /**
-   * Implementation of emit() that supports both parallel (default) and sequential execution.
-   * Handles error boundaries to prevent one subscriber from breaking others.
+   * Triggers an event with payload data and executes all listeners.
+   * Supports both parallel (default) and sequential execution strategies.
+   * Handles errors to prevent one listener from breaking others.
    */
   async emit<E extends keyof Events>(
     event: E,

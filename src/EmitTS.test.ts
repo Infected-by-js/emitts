@@ -211,7 +211,7 @@ describe("EmitTS", () => {
   })
 
   describe("Emission strategies", () => {
-   it("should execute listeners in parallel by default", async () => {
+    it("should execute listeners in parallel by default", async () => {
       const emitter = new EmitTS<TestEvents>()
       const results: number[] = []
       const delays = [100, 50, 200]
